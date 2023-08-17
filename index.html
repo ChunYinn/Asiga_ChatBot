@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Support Chatbot</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://support.asiga.com/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- side bar section -->
+    <section class="side-bar">
+      <div class="btn">
+        <button>New Chat</button>
+        <!-- <button>New Chat</button> -->
+      </div>
+      
+      <div class="history">
+        <div class="history-item">
+            <p>29/03/2023</p>
+        </div>
+        <div class="history-item">
+            <p>28/03/2023</p>
+        </div>
+        <div class="history-item">
+            <p>27/03/2023</p>
+        </div>
+        <!-- Add more if history div needed -->
+    </div>
+
+      <div class="user-side-bar">
+          <p class="user-name">ChunYin</p>
+      </div>
+    </section>
+  
+    <!-- chat section -->
+    <section class="main">
+      <div class="top-bar">
+        <p class="top-bar-txt">Customer Support | Chat</p>
+      </div>
+      
+      <div class="chat-container">
+        <div class="chatbot-message-wrapper">
+          <img src="resource/robot.png" alt="Robot Icon" class="robot-icon">
+          <div class="chatbot-message message">
+              <p>Asiga GPT: How can I help you?</p>
+          </div>
+      </div>
+      </div>
+
+      <!-- BOTTOM BAR -->
+      <div class="bottom-section">
+        <div class="input-container">
+          <textarea class="user-input"></textarea>
+          <div id="submit">➢</div>
+        </div>
+      </div>
+
+      <!-- optional text -->
+      <p class="copyright">© 2023 Asiga. All rights reserved</p>
+    </section>
+    
+
+
+    
+    <script src="app.js" async defer></script>
+  </body>
+</html>
