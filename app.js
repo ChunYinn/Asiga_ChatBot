@@ -55,7 +55,7 @@ generateMsg = () => {
           historyContainer.appendChild(chatHistoryItem);
       }
   
-      isFirstMessage = false;  // Update the flag
+      isFirstMessage = false; 
   }
 }
 
@@ -91,3 +91,37 @@ userInput.addEventListener('keydown', function(e) {
       this.style.height = (this.scrollHeight) + 'px';
   }
 });
+
+//------------Collapse btn----
+const sidebar = document.querySelector('.side-bar');
+const mainContent = document.querySelector('.main');
+const collapseBtn = document.getElementById('collapseBtn');
+const openBtn = document.getElementById('openBtn');
+
+collapseBtn.addEventListener('click', function() {
+    if (sidebar.classList.contains('collapsed')) {
+        // Expand the sidebar
+        sidebar.classList.remove('collapsed');
+        mainContent.classList.remove('with-collapsed-sidebar');
+        collapseBtn.innerHTML = "<<<";
+        openBtn.style.display = 'none';
+    } else {
+        // Collapse the sidebar
+        sidebar.classList.add('collapsed');
+        mainContent.classList.add('with-collapsed-sidebar');
+        collapseBtn.innerHTML = ">>>";
+        openBtn.style.display = 'block';
+    }
+});
+
+openBtn.addEventListener('click', function() {
+    sidebar.classList.remove('collapsed');
+    mainContent.classList.remove('with-collapsed-sidebar');
+    collapseBtn.innerHTML = "<<<";
+    openBtn.style.display = 'none';
+});
+
+//----media < 850px------------
+
+// still figuring
+

@@ -95,7 +95,7 @@ div.user-side-bar {
 
 .btn {
   height: 60px;
-  background-color: #333333;
+  background-color: black;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +106,7 @@ button{
   background-color: transparent;
   border-radius: 5px;
   padding: 10px;
-  margin: 13px;
+  margin: 13px 3px 13px 13px;
   width: 70%;
   color: #e7e5e5;
   transition: color 0.3s, border-color 0.3s;
@@ -116,6 +116,79 @@ button:hover {
   color: #ffffff; 
   border-color: rgba(255, 255, 255, 0.8); 
 }
+
+.side-bar.collapsed {
+  width: 0;
+  /* transition: width 0.1s;  */
+  padding: 0;
+  overflow: hidden;
+}
+
+.side-bar.collapsed .btn > button:not(#collapseBtn),
+.side-bar.collapsed .history,
+.side-bar.collapsed .user-side-bar {
+  display: none; 
+}
+
+
+.main.with-collapsed-sidebar {
+  margin-left: 0;
+}
+
+#collapseBtn {
+  width: 50px;
+  margin-left: 3px;
+}
+
+.control-btn {
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 13px 3px 13px 13px;
+  color: #e7e5e5;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.control-btn:hover {
+  color: #ffffff; 
+  border-color: rgba(255, 255, 255, 0.8); 
+}
+
+#openBtn {
+  display: none;
+  position: absolute;
+  left: 5px; 
+  top: 17px; 
+  transform: translateY(-50%);
+  width: 50px;
+  z-index: 10;
+}
+
+.side-bar.collapsed + .main #openBtn {
+  display: inline-block; 
+}
+
+/* @media (max-width: 850px) {
+  .side-bar {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .side-bar .btn > button:not(#collapseBtn),
+  .side-bar .history,
+  .side-bar .user-side-bar {
+    display: none;
+  }
+
+  .main #openBtn {
+    display: inline-block;
+    opacity: 1;
+    visibility: visible;
+  }
+} */
+
 
 /* ----------------side- History-------------- */
 
@@ -154,7 +227,8 @@ button:hover {
   cursor: pointer;
   }
 
-/* ----------------Main-------------- */
+/* ----------------Main------------------------------ */
+/* ----------------Main------------------------------ */
 .main {
   display: flex;
   flex-direction: column;
@@ -167,7 +241,7 @@ button:hover {
 }
 
 .top-bar {
-  background-color: #333333;
+  background-color: black;
   height: 60px; 
   width: 100%;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); 
