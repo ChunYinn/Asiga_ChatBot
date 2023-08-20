@@ -189,6 +189,34 @@ button:hover {
   }
 } */
 
+/* delete history icon  */
+.delete-icon {
+  display: none;
+  margin-left: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.delete-icon:hover {
+  color: red;
+}
+
+.history-item {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-item:hover .delete-icon {
+  display: inline-block;
+}
+
+.history-item:hover p {
+  opacity: 0.6;
+}
+
 
 /* ----------------side- History-------------- */
 
