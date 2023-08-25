@@ -3,7 +3,7 @@ const userInput = document.querySelector('.user-input');
 const chatContainer = document.querySelector('.chat-container');
 let isFirstMessage = true;  
 
-generateMsg = () => {
+generateMsg = async() => {
     const userMessage = userInput.value;
 
     //empty msg
@@ -25,15 +25,28 @@ generateMsg = () => {
 
     // Add robot icon to the wrapper
     const robotIcon = document.createElement('img');
-    robotIcon.src = "resource/robot.png";
+    robotIcon.src = "/static/resource/robot.png";
     robotIcon.alt = "Robot Icon";
     robotIcon.className = "robot-icon";
     chatbotMessageWrapper.appendChild(robotIcon);
 
+    // fast api
+    // const response = await fetch('http://127.0.0.1:8000/get_response', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({ query: userMessage })
+    // });
+
+    // const data = await response.json();
+    // const chatbotResponse = data.response;
+
     // Create and append chatbot message to the wrapper
     const chatbotMessageDiv = document.createElement('div');
     chatbotMessageDiv.className = 'chatbot-message message';
-    chatbotMessageDiv.innerHTML = `<p>Testing!!!</p>`;
+    chatbotMessageDiv.innerHTML = `<p>testing!!!</p>`;
+    // chatbotMessageDiv.innerHTML = `<p>${chatbotResponse}</p>`;
     chatbotMessageWrapper.appendChild(chatbotMessageDiv);
 
     // Append the wrapper to the chat container
