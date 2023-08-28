@@ -1,0 +1,54 @@
+{
+  "customer_id": 1,
+  "customer_name": "Eric",
+  "chat_sessions": [
+    {
+      "session_id": "sessionUniqueId001",
+      "start_timestamp": "2023-08-24T09:30:00Z",
+      "chat_log": [
+        {
+          "_id": "messageId001",
+          "sender": "bot",
+          "content": "Asiga GPT: How can I help you?",
+          "timestamp": "2023-08-24T09:30:01Z"
+        },
+        {
+          "_id": "messageId002",
+          "sender": "customer",
+          "content": "I have a question about my order status.",
+          "timestamp": "2023-08-24T09:31:15Z"
+        },
+        {
+          "_id": "messageId003",
+          "sender": "bot",
+          "content": "Sure! Please provide me with your order number so I can look it up.",
+          "timestamp": "2023-08-24T09:31:30Z"
+        }
+      ]
+    },
+    {
+      "session_id": "sessionUniqueId002",
+      "start_timestamp": "2023-08-25T12:00:00Z",
+      "chat_log": [
+        {
+          "_id": "messageId004",
+          "sender": "bot",
+          "content": "Asiga GPT: How can I help you?",
+          "timestamp": "2023-08-25T12:00:05Z"
+        },
+        {
+          "_id": "messageId005",
+          "sender": "customer",
+          "content": "I'd like to return an item I purchased.",
+          "timestamp": "2023-08-25T12:01:10Z"
+        },
+        {
+          "_id": "messageId006",
+          "sender": "bot",
+          "content": "I'm sorry to hear that. Please provide me with the purchase details and I'll guide you through the return process.",
+          "timestamp": "2023-08-25T12:01:30Z"
+        }
+      ]
+    }
+  ]
+}
