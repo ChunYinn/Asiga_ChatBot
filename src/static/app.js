@@ -1,84 +1,57 @@
-const submitBtn = document.querySelector('#submit');
+const chatForm = document.querySelector('#chatForm');
 const userInput = document.querySelector('.user-input');
 const chatContainer = document.querySelector('.chat-container');
-let isFirstMessage = true;  
+let isFirstMessage = true; 
+const submitBtn = document.querySelector('#submit'); // Ensure you have a reference to the submit button
+
+submitBtn.addEventListener('click', async function(e) {
+    e.preventDefault();
+    await generateMsg();
+});
 
 generateMsg = async() => {
     const userMessage = userInput.value;
 
-    //empty msg
-    if (userMessage.trim() === "") return; 
+    // Check for empty message
+    if (userMessage.trim() === "") return;
 
-    //date generator
-    let currentDate = new Date();
-    let formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')} ${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
-
-    // Append user message to main chat
+    // user msg
     const userMessageDiv = document.createElement('div');
     userMessageDiv.className = 'user-message message';
     userMessageDiv.innerHTML = `<p>${userMessage}</p>`;
     chatContainer.appendChild(userMessageDiv);
 
-    // Create wrapper for chatbot response
+    // Clear the user input
+    userInput.value = "";
+
+    // Send message to backend
+    const formData = new FormData(chatForm);
+    const response = await fetch('/chat/username/submit', {
+        method: 'POST',
+        body: formData
+    });
+
+    const data = await response.json();
+    const chatbotResponse = data.message;
+
+    // Create and append chatbot message to the chat container
     const chatbotMessageWrapper = document.createElement('div');
     chatbotMessageWrapper.className = 'chatbot-message-wrapper';
-
-    // Add robot icon to the wrapper
-    const robotIcon = document.createElement('img');
-    robotIcon.src = "/static/resource/robot.png";
-    robotIcon.alt = "Robot Icon";
-    robotIcon.className = "robot-icon";
-    chatbotMessageWrapper.appendChild(robotIcon);
-
-    // fast api
-    // const response = await fetch('http://127.0.0.1:8000/get_response', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ query: userMessage })
-    // });
-
-    // const data = await response.json();
-    // const chatbotResponse = data.response;
-
-    // Create and append chatbot message to the wrapper
+    const chatbotIcon = document.createElement('img');
+    chatbotIcon.src = "/static/resource/robot.png";
+    chatbotIcon.alt = "Robot Icon";
+    chatbotIcon.className = "robot-icon";
+    chatbotMessageWrapper.appendChild(chatbotIcon);
     const chatbotMessageDiv = document.createElement('div');
     chatbotMessageDiv.className = 'chatbot-message message';
-    chatbotMessageDiv.innerHTML = `<p>testing!!!</p>`;
-    // chatbotMessageDiv.innerHTML = `<p>${chatbotResponse}</p>`;
+    chatbotMessageDiv.innerHTML = `<p>Asiga GPT: ${chatbotResponse}</p>`;
     chatbotMessageWrapper.appendChild(chatbotMessageDiv);
-
-    // Append the wrapper to the chat container
     chatContainer.appendChild(chatbotMessageWrapper);
 
-    // Clear input
-    userInput.value = "";
+
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // Append to chat history
-    if (isFirstMessage) {
-        const historyContainer = document.querySelector('.history');
-        const chatHistoryItem = document.createElement('div');
-        chatHistoryItem.className = 'history-item';
-        chatHistoryItem.innerHTML = `
-            <p>${formattedDate}</p>
-            <div class="delete-icon">&#10006;</div>
-        `;
-
-        // Check if there's any child in the historyContainer
-        if (historyContainer.firstChild) {
-            historyContainer.insertBefore(chatHistoryItem, historyContainer.firstChild);
-        } else {
-            historyContainer.appendChild(chatHistoryItem);
-        }
-
-        isFirstMessage = false; 
-    }
-}
-
-submitBtn.addEventListener('click', generateMsg);
-
+};
 
 
 //---------------------user-input text area---------------------------------------
@@ -168,7 +141,7 @@ newChatBtn.addEventListener('click', function() {
     chatbotMessageWrapper.className = 'chatbot-message-wrapper';
 
     const robotIcon = document.createElement('img');
-    robotIcon.src = "resource/robot.png";
+    robotIcon.src = "/static/resource/robot.png";
     robotIcon.alt = "Robot Icon";
     robotIcon.className = "robot-icon";
     chatbotMessageWrapper.appendChild(robotIcon);
@@ -180,3 +153,72 @@ newChatBtn.addEventListener('click', function() {
 
     chatContainer.appendChild(chatbotMessageWrapper);
 });
+
+// session handler--------------------------
+// let currentSession = null;
+
+// document.addEventListener('DOMContentLoaded', async () => {
+//     const historyContainer = document.querySelector('.history');
+    
+//     try {
+//         const response = await fetch('/sessions/');
+//         const sessions = await response.json();
+        
+//         sessions.reverse().forEach(session => {
+//             const chatHistoryItem = document.createElement('div');
+//             chatHistoryItem.className = 'history-item';
+//             chatHistoryItem.dataset.sessionId = session.id;
+//             chatHistoryItem.innerHTML = `
+//                 <p>${session.start_timestamp}</p>
+//                 <div class="delete-icon" onclick="deleteSession(${session.id})">&#10006;</div>
+//             `;
+//             historyContainer.appendChild(chatHistoryItem);
+//         });
+//     } catch (error) {
+//         console.error('Failed to fetch sessions:', error);
+//     }
+// });
+
+// //new session
+// async function startNewSession() {
+//     if (!currentSession) {
+//         await startNewSession();
+//     }
+
+//     try {
+//         const response = await fetch('/start-session/', {
+//             method: 'POST'
+//         });
+//         const session = await response.json();
+//         currentSession = session;  // Set the current session
+        
+//         const chatHistoryItem = document.createElement('div');
+//         chatHistoryItem.className = 'history-item';
+//         chatHistoryItem.dataset.sessionId = session.id;
+//         chatHistoryItem.innerHTML = `
+//             <p>${session.start_timestamp}</p>
+//             <div class="delete-icon" onclick="deleteSession(${session.id})">&#10006;</div>
+//         `;
+//         historyContainer.insertBefore(chatHistoryItem, historyContainer.firstChild);
+        
+//     } catch (error) {
+//         console.error('Failed to start new session:', error);
+//     }
+// }
+
+
+// //delete session
+// async function deleteSession(sessionId) {
+//     try {
+//         await fetch(`/sessions/${sessionId}`, {
+//             method: 'DELETE'
+//         });
+        
+//         const sessionDiv = document.querySelector(`[data-session-id="${sessionId}"]`);
+//         if (sessionDiv) {
+//             sessionDiv.remove();
+//         }
+//     } catch (error) {
+//         console.error('Failed to delete session:', error);
+//     }
+// }

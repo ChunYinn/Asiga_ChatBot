@@ -5,10 +5,8 @@ openai.api_key = config.API_KEY
 
 messages = [{"role": "system", "content": "You are a helpful assistant."}]
 
-while True:
-    msg = input(">>> ")
-    
-    messages.append({"role": "user", "content": msg})
+def chat_with_gpt3(user_input):
+    messages.append({"role": "user", "content": user_input})
   
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -18,4 +16,4 @@ while True:
     assistant_msg = response['choices'][0]['message']['content']
     messages.append({"role": "assistant", "content": assistant_msg})
     
-    print("ChatGPT: ", assistant_msg.strip("\n").strip())
+    return assistant_msg.strip("\n").strip()

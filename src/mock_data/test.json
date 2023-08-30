@@ -1,6 +1,8 @@
 {
   "customer_id": 1,
   "customer_name": "Eric",
+  "customer_email": "a@gmail.com",
+  "customer_password": "123456",
   "chat_sessions": [
     {
       "session_id": "sessionUniqueId001",

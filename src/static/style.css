@@ -117,6 +117,34 @@ button:hover {
   border-color: rgba(255, 255, 255, 0.8); 
 }
 
+/* button.new-chat-btn {
+  background-color: #fbeee0;
+  border: 2px solid #422800;
+  border-radius: 30px;
+  box-shadow: #422800 4px 4px 0 0;
+  color: #422800;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 0 18px;
+  line-height: 50px;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button.new-chat-btn:hover {
+  background-color: #fff;
+}
+
+button.new-chat-btn:active {
+  box-shadow: #422800 2px 2px 0 0;
+  transform: translate(2px, 2px);
+} */
+
 .side-bar.collapsed {
   width: 0;
   /* transition: width 0.1s;  */
@@ -365,17 +393,18 @@ button:hover {
   align-items: center;
 }
 
-.input-container #submit{
+.input-container #submit {
+  background: none;
+  border: none;
   cursor: pointer;
-  font-size: 40px;
-  color: #54595F;
+  font-size: 40px;  
+  color: #333;      
+  outline: none;
   margin-left: 25px;
-  /* border: 1px solid black; */
 }
 
 .input-container #submit:hover {
-  color: #030304; 
-  transform: scale(1.1); 
+  transform: scale(1.2); 
 }
 
 .user-input {

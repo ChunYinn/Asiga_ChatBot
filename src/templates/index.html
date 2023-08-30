@@ -15,11 +15,17 @@
     <!-- side bar section -->
     <section class="side-bar" id="sidebar">
       <div class="btn">
-        <button class="new-chat-btn">New Chat</button>
+        <button class="new-chat-btn" role="button">New Chat</button>
         <button class="control-btn" id="collapseBtn"><<<</button>
       </div>
       
       <div class="history">
+        {% for session in chat_data.chat_sessions|reverse %}
+        <div class="history-item">
+            <p>{{ session.start_timestamp[:10] }}</p>
+            <div class="delete-icon">&#10006;</div>
+        </div>
+        {% endfor %}
         <!-- <div class="history-item">
             <p>29/03/2023</p>
             <div class="delete-icon">&#10006;</div>
@@ -28,7 +34,7 @@
     </div>
 
       <div class="user-side-bar">
-          <p class="user-name">Name</p>
+          <p class="user-name">{{ user }}</p>
       </div>
     </section>
   
@@ -49,12 +55,12 @@
       </div>
 
       <!-- BOTTOM BAR -->
-      <div class="bottom-section">
+      <form class="bottom-section" id="chatForm" method="post" action="/submit_message">
         <div class="input-container">
-          <textarea class="user-input"></textarea>
-          <div id="submit">➢</div>
+            <textarea class="user-input" name="user_message"></textarea>
+            <input type="submit" id="submit" class="submit-btn" value="➢"></input>
         </div>
-      </div>
+      </form>
 
       <!-- optional text -->
       <p class="copyright">© 2023 Asiga. All rights reserved</p>
