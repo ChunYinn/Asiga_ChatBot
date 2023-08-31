@@ -21,8 +21,8 @@
       
       <div class="history">
         {% for session in chat_data|reverse %}
-        <div class="history-item">
-            <p>{{ session.start_timestamp[:10] }}</p>
+        <div class="history-item" data-session-id="{{ session.session_id }}">
+            <p>{{ session.start_timestamp[:19] }}</p>
             <div class="delete-icon">&#10006;</div>
         </div>
         {% endfor %}

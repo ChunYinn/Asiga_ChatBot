@@ -28,6 +28,7 @@ customers = db.customers #collection name
 def get_user_by_id(user_id):
     return customers.find_one({"_id": ObjectId(user_id)})
 
+#login auth
 def authenticate_customer(email, password):
     user = customers.find_one({"customer_email": email})
     if user and user["customer_password"] == password:
@@ -35,6 +36,7 @@ def authenticate_customer(email, password):
     else:
         return False
 
+#new chat session
 def start_new_chat_session(user_id: str):
     # Get the user from the DB
     oid = ObjectId(user_id)
@@ -89,3 +91,21 @@ def log_message(user_id, session_id, sender, content):
 
     return message
 
+#delete session
+def delete_session(user_id: str, session_id: str) -> bool:
+    """
+    Deletes a chat session for a given user.
+
+    :param user_id: User ID string.
+    :param session_id: Session ID string.
+    :return: True if deletion succeeded, False otherwise.
+    """
+    try:
+        result = db.customers.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$pull": {"chat_sessions": {"session_id": session_id}}}
+        )
+        return result.modified_count > 0
+    except PyMongoError as e:
+        print("MongoDB Error in delete_session:", e)
+        return False

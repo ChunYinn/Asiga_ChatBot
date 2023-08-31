@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
 import json
-from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id
+from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id, delete_session
 from chatgpt import chat_with_gpt3
 import uuid
 
@@ -77,3 +77,10 @@ async def start_session(user_id: str):
     return {"session_id": new_session["session_id"]} #return session_id}
 
 
+@app.delete("/delete-session/{user_id}/{session_id}")
+async def delete_session_endpoint(user_id: str, session_id: str):
+    result = delete_session(user_id, session_id)
+    if result:
+        return {"message": "Session deleted successfully"}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to delete the session")

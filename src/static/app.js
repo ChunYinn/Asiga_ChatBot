@@ -150,15 +150,31 @@ openBtn.addEventListener('click', function() {
 // still figuring
 
 
-// delete icon for history chat----------
-document.addEventListener('click', function(e) {
+// delete session eventlistener ---------
+document.addEventListener('click', async function(e) {
     if (e.target && e.target.classList.contains('delete-icon')) {
         let historyItem = e.target.closest('.history-item');
         if (historyItem) {
-            historyItem.remove();
+            const sessionId = historyItem.getAttribute('data-session-id');
+            const user_id = document.getElementById('user_id').value;
+            if (sessionId && user_id) {
+                try {
+                    const response = await fetch(`/delete-session/${user_id}/${sessionId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        historyItem.remove();
+                    } else {
+                        console.error("Failed to delete session from backend.");
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                }
+            }
         }
     }
 });
+
 
 // New Chat btn -----------------------------------
 const newChatBtn = document.querySelector('.new-chat-btn');
@@ -187,72 +203,3 @@ newChatBtn.addEventListener('click', function() {
 
     chatContainer.appendChild(chatbotMessageWrapper);
 });
-
-// session handler--------------------------
-// let currentSession = null;
-
-// document.addEventListener('DOMContentLoaded', async () => {
-//     const historyContainer = document.querySelector('.history');
-    
-//     try {
-//         const response = await fetch('/sessions/');
-//         const sessions = await response.json();
-        
-//         sessions.reverse().forEach(session => {
-//             const chatHistoryItem = document.createElement('div');
-//             chatHistoryItem.className = 'history-item';
-//             chatHistoryItem.dataset.sessionId = session.id;
-//             chatHistoryItem.innerHTML = `
-//                 <p>${session.start_timestamp}</p>
-//                 <div class="delete-icon" onclick="deleteSession(${session.id})">&#10006;</div>
-//             `;
-//             historyContainer.appendChild(chatHistoryItem);
-//         });
-//     } catch (error) {
-//         console.error('Failed to fetch sessions:', error);
-//     }
-// });
-
-// //new session
-// async function startNewSession() {
-//     if (!currentSession) {
-//         await startNewSession();
-//     }
-
-//     try {
-//         const response = await fetch('/start-session/', {
-//             method: 'POST'
-//         });
-//         const session = await response.json();
-//         currentSession = session;  // Set the current session
-        
-//         const chatHistoryItem = document.createElement('div');
-//         chatHistoryItem.className = 'history-item';
-//         chatHistoryItem.dataset.sessionId = session.id;
-//         chatHistoryItem.innerHTML = `
-//             <p>${session.start_timestamp}</p>
-//             <div class="delete-icon" onclick="deleteSession(${session.id})">&#10006;</div>
-//         `;
-//         historyContainer.insertBefore(chatHistoryItem, historyContainer.firstChild);
-        
-//     } catch (error) {
-//         console.error('Failed to start new session:', error);
-//     }
-// }
-
-
-// //delete session
-// async function deleteSession(sessionId) {
-//     try {
-//         await fetch(`/sessions/${sessionId}`, {
-//             method: 'DELETE'
-//         });
-        
-//         const sessionDiv = document.querySelector(`[data-session-id="${sessionId}"]`);
-//         if (sessionDiv) {
-//             sessionDiv.remove();
-//         }
-//     } catch (error) {
-//         console.error('Failed to delete session:', error);
-//     }
-// }
