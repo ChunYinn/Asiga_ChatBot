@@ -20,7 +20,7 @@
       </div>
       
       <div class="history">
-        {% for session in chat_data.chat_sessions|reverse %}
+        {% for session in chat_data|reverse %}
         <div class="history-item">
             <p>{{ session.start_timestamp[:10] }}</p>
             <div class="delete-icon">&#10006;</div>
@@ -57,6 +57,8 @@
       <!-- BOTTOM BAR -->
       <form class="bottom-section" id="chatForm" method="post" action="/submit_message">
         <div class="input-container">
+            <input type="hidden" name="user_id" id="user_id" value="{{ user_id }}">
+            <input type="hidden" id="session_id" name="session_id">
             <textarea class="user-input" name="user_message"></textarea>
             <input type="submit" id="submit" class="submit-btn" value="➢"></input>
         </div>

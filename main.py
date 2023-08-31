@@ -1,12 +1,14 @@
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse,JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from datetime import datetime
 import json
-
+from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id
 from chatgpt import chat_with_gpt3
+import uuid
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
@@ -26,46 +28,52 @@ def user_login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login") 
-async def handle_login(username: str = Form(...), password: str = Form(...)):
-    # Add authentication
-    return RedirectResponse(url=f"/chat/{username}")
+async def handle_login(request: Request, username: str = Form(...), password: str = Form(...)):
+    # Validate the user credentials
+    customer = authenticate_customer(username, password)
+    if not customer:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+    # Redirect to the chat page
+    return RedirectResponse(url=f"/chat/{str(customer['_id'])}")
 
-# Renders the chat page for a specific user
-@app.post("/chat/{user_name}", response_class=HTMLResponse)
-async def read_root(request: Request, user_name: str):
-    with open("src/mock_data/test.json") as file:
-        data1 = json.load(file)
-    return templates.TemplateResponse("index.html", {"request": request, "user": user_name, "chat_data": data1})
+@app.post("/chat/{user_id}", response_class=HTMLResponse)
+async def read_root(request: Request, user_id: str):
+    customer = get_user_by_id(user_id)
+    if not customer:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return templates.TemplateResponse("index.html", {
+        "request": request, 
+        "user": customer["customer_name"], 
+        "chat_data": customer["chat_sessions"],
+        "user_id": str(customer['_id'])
+    })
 
-@app.post("/chat/{user_name}/submit")
-async def submit_message(user_message: str = Form(...)):
-    # Process the user's message if needed
+
+@app.post("/chat/{user_id}/submit")
+async def submit_message(user_id: str, user_message: str = Form(...), session_id: str = Form(...)):
+    print(f"session_id: {session_id}")
+    # AI response
     response_message = chat_with_gpt3(user_message)
+    print(f"response_message: {response_message}")
+    
+    # Log the user's message (wrong here)
+    log_result = log_message(user_id, session_id, "user", user_message)
+    if "error" in log_result:
+        raise HTTPException(status_code=500, detail=log_result["error"])
+    
+    # Log the chatbot's response
+    log_result = log_message(user_id, session_id, "chatbot", response_message)
+    if "error" in log_result:
+        raise HTTPException(status_code=500, detail=log_result["error"])
+    
     return JSONResponse(content={"message": response_message})
 
-#Session-----------------------
-# chat_sessions = []
-
-# @app.post("/start-session/")
-# def start_session():
-#     session = {
-#         "id": len(chat_sessions) + 1,
-#         "start_timestamp": datetime.now().isoformat()
-#     }
-#     chat_sessions.append(session)
-#     return session
-
-# @app.get("/sessions/")
-# def get_sessions():
-#     return chat_sessions
-
-# @app.delete("/sessions/{session_id}")
-# def delete_session(session_id: int):
-#     session_to_remove = next((s for s in chat_sessions if s["id"] == session_id), None)
-#     if session_to_remove:
-#         chat_sessions.remove(session_to_remove)
-#         return {"status": "Session removed"}
-#     return {"status": "Session not found"}
-
+@app.post("/start-session/{user_id}")
+async def start_session(user_id: str):
+    new_session = start_new_chat_session(user_id)
+    if "error" in new_session:
+        raise HTTPException(status_code=404, detail=new_session["error"])
+    return {"session_id": new_session["session_id"]} #return session_id}
 
 

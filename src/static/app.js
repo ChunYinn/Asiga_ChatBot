@@ -15,18 +15,31 @@ generateMsg = async() => {
     // Check for empty message
     if (userMessage.trim() === "") return;
 
+    // Extract user ID
+    const user_id = document.getElementById('user_id').value;
+    console.log(user_id);
+    // start a session
+    if(isFirstMessage) {
+        const newSessionId = await startNewChatSession(user_id);
+        if (newSessionId) {
+            document.getElementById('session_id').value = newSessionId; // Set the hidden input value
+        }
+        isFirstMessage = false;
+    }
+
     // user msg
     const userMessageDiv = document.createElement('div');
     userMessageDiv.className = 'user-message message';
     userMessageDiv.innerHTML = `<p>${userMessage}</p>`;
     chatContainer.appendChild(userMessageDiv);
 
-    // Clear the user input
-    userInput.value = "";
+    //get current session_id
+    //const session_id = document.getElementById('session_id').value;
+    //iget the session_id from the hidden input now how to use it for backend
 
     // Send message to backend
     const formData = new FormData(chatForm);
-    const response = await fetch('/chat/username/submit', {
+    const response = await fetch(`/chat/${user_id}/submit`, {
         method: 'POST',
         body: formData
     });
@@ -50,8 +63,29 @@ generateMsg = async() => {
 
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
+    // Clear the user input
+    userInput.value = "";
+
 
 };
+
+startNewChatSession = async(user_id) => {
+
+    const response = await fetch(`/start-session/${user_id}`, {
+        method: 'POST'
+    });
+
+    const data = await response.json();
+    if (data.error) {
+        console.error(data.error);
+        // Handle error, maybe display an error message to the user or retry
+        return null; // return null if there's an error
+    }
+    return data.session_id; // Return the session_id from the function
+};
+
+
+
 
 
 //---------------------user-input text area---------------------------------------
