@@ -2,6 +2,8 @@ from datetime import datetime
 from pymongo.mongo_client import MongoClient
 from bson.objectid import ObjectId
 from pymongo.errors import PyMongoError
+from pydantic import BaseModel
+from typing import List, Dict, Any
 
 uri = "mongodb+srv://eric:123@asiga.tmcfs9q.mongodb.net/?retryWrites=true&w=majority"
 
@@ -23,6 +25,10 @@ customers = db.customers #collection name
 #             "chat_sessions": []
 #         }
 #         customers.insert_one(user_data)
+
+def get_database():
+    db = MongoClient(uri)
+    return db.customers
 
 #get user
 def get_user_by_id(user_id):
@@ -48,13 +54,13 @@ def start_new_chat_session(user_id: str):
     # Create a new session
     new_session = {
         "session_id": str(ObjectId()),  # Using ObjectId as a unique session ID
-        "start_timestamp": datetime.now().isoformat(),
+        "start_timestamp": datetime.now().isoformat().replace('T', ' '),
         "chat_log": [
             {
                 "_id": str(ObjectId()),
-                "sender": "bot",
+                "sender": "chatbot",
                 "content": "Asiga GPT: How can I help you?",
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat().replace('T', ' ')
             }
         ]
     }
@@ -74,7 +80,7 @@ def log_message(user_id, session_id, sender, content):
     message = {
         "sender": sender,
         "content": content,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat().replace('T', ' ')
     }
     
     try:
@@ -83,7 +89,7 @@ def log_message(user_id, session_id, sender, content):
             {"$push": {"chat_sessions.$.chat_log": {
                 "sender": sender,
                 "content": content,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat().replace('T', ' ')
             }}}
         )
     except PyMongoError as e:
@@ -109,3 +115,24 @@ def delete_session(user_id: str, session_id: str) -> bool:
     except PyMongoError as e:
         print("MongoDB Error in delete_session:", e)
         return False
+    
+
+def get_messages_from_database(user_id: str, session_id: str) -> List[Dict[str, Any]]:
+    try:
+        user_data = db.customers.find_one({"_id": ObjectId(user_id)})
+        
+        if not user_data:
+            return []
+
+        # Find the session by session_id
+        for session in user_data.get("chat_sessions", []):
+            if session["session_id"] == session_id:
+                return session.get("chat_log", [])
+
+        return []
+
+    except Exception as e:
+        print("Error in get_messages_from_database:", e)
+        return []
+    
+

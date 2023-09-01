@@ -61,7 +61,7 @@ body {
 /*-------------- side bar ----------*/
 .side-bar {
   /* background-color: #f7f7f7; */
-  width: 270px;
+  width: 280px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -117,33 +117,13 @@ button:hover {
   border-color: rgba(255, 255, 255, 0.8); 
 }
 
-/* button.new-chat-btn {
-  background-color: #fbeee0;
-  border: 2px solid #422800;
-  border-radius: 30px;
-  box-shadow: #422800 4px 4px 0 0;
-  color: #422800;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: 600;
-  font-size: 18px;
-  padding: 0 18px;
-  line-height: 50px;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+.control-btn img {
+  width: 16px; 
+  height: 16px; 
+  display: block;
+  margin: auto;
 }
 
-button.new-chat-btn:hover {
-  background-color: #fff;
-}
-
-button.new-chat-btn:active {
-  box-shadow: #422800 2px 2px 0 0;
-  transform: translate(2px, 2px);
-} */
 
 .side-bar.collapsed {
   width: 0;
@@ -164,7 +144,7 @@ button.new-chat-btn:active {
 }
 
 #collapseBtn {
-  width: 50px;
+  width: 40px;
   margin-left: 3px;
 }
 
@@ -179,8 +159,8 @@ button.new-chat-btn:active {
 }
 
 .control-btn:hover {
-  color: #ffffff; 
-  border-color: rgba(255, 255, 255, 0.8); 
+  border-color: rgba(255, 255, 255); 
+  opacity: 0.8;
 }
 
 #openBtn {
@@ -245,12 +225,32 @@ button.new-chat-btn:active {
   opacity: 0.6;
 }
 
+/* side bar scroll bar */
+.side-bar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.side-bar::-webkit-scrollbar-thumb {
+  background-color: #c6c6c6;
+  border-radius: 5px;
+}
+
+.side-bar::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+
+@media (max-width: 850px) {
+  .side-bar::-webkit-scrollbar {
+    display: none;
+  }
+}
 
 /* ----------------side- History-------------- */
 
 .history {
   overflow-y: auto;
-  max-height: 70vh; 
+  max-height: 75vh; 
   padding: 10px;
 }
 
@@ -310,6 +310,11 @@ button.new-chat-btn:active {
   right: 3%;
   top: 20px;
   font-weight: 800;
+}
+
+button#openBtn{
+  width: 40px;
+  height: 36px;
 }
 
 /* chat-- */
@@ -435,7 +440,123 @@ button.new-chat-btn:active {
   bottom: 2%;
 }
 
+/* loading animation */
+.ring
+{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:150px;
+  height:150px;
+  background:transparent;
+  border:3px solid #4CAF50;
+  border-radius:50%;
+  text-align:center;
+  line-height:150px;
+  font-family:sans-serif;
+  font-size:20px;
+  color:#cbcbcb;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  text-shadow:0 0 10px #f7f7f7; 
+  box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+.ring:before
+{
+  content:'';
+  position:absolute;
+  top:-3px;
+  left:-3px;
+  width:100%;
+  height:100%;
+  border:3px solid transparent;
+  border-top:3px solid #f7f7f7; 
+  border-right:3px solid #f7f7f7; 
+  border-radius:50%;
+  animation:animateC 2s linear infinite;
+}
+span
+{
+  display:block;
+  position:absolute;
+  top:calc(50% - 2px);
+  left:50%;
+  width:50%;
+  height:4px;
+  background:transparent;
+  transform-origin:left;
+  animation:animate 2s linear infinite;
+}
+span:before
+{
+  content:'';
+  position:absolute;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#f7f7f7; 
+  top:-6px;
+  right:-8px;
+  box-shadow:0 0 20px #f7f7f7; 
+}
+
+@keyframes animateC
+{
+  0%
+  {
+    transform:rotate(0deg);
+  }
+  100%
+  {
+    transform:rotate(360deg);
+  }
+}
+@keyframes animate
+{
+  0%
+  {
+    transform:rotate(45deg);
+  }
+  100%
+  {
+    transform:rotate(405deg);
+  }
+}
+
+/* for loading msg animation ... */
+/* @keyframes loadingDots {
+  0%, 20% {
+      opacity: 0;
+  }
+  50% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0;
+  }
+}
+
+.loading-dots span {
+  animation-name: loadingDots;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.6s;
+}
 
 
-
-
+ */

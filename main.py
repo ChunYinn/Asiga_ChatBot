@@ -1,14 +1,15 @@
 from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse,JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
-import json
-from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id, delete_session
+from pymongo import MongoClient
+from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id, delete_session, get_messages_from_database, get_database
 from chatgpt import chat_with_gpt3
-import uuid
+from typing import List, Dict, Any
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
@@ -84,3 +85,18 @@ async def delete_session_endpoint(user_id: str, session_id: str):
         return {"message": "Session deleted successfully"}
     else:
         raise HTTPException(status_code=500, detail="Failed to delete the session")
+
+#hist caht onclick
+class ChatMessage(BaseModel):
+    _id: str
+    sender: str
+    content: str
+    timestamp: str
+    
+@app.get("/get-session/{user_id}/{session_id}", response_model=List[ChatMessage])
+def get_session(user_id: str, session_id: str, db: MongoClient = Depends(get_database)):
+    messages = get_messages_from_database(user_id, session_id)
+    print(f"messages: {messages}")
+    if not messages:
+        raise HTTPException(status_code=404, detail="No messages found for this session")
+    return messages
