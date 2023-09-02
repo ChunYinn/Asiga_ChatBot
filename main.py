@@ -50,7 +50,6 @@ async def read_root(request: Request, user_id: str):
         "user_id": str(customer['_id'])
     })
 
-
 @app.post("/chat/{user_id}/submit")
 async def submit_message(user_id: str, user_message: str = Form(...), session_id: str = Form(...)):
     print(f"session_id: {session_id}")
