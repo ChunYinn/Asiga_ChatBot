@@ -34,6 +34,12 @@ def get_database():
 def get_user_by_id(user_id):
     return customers.find_one({"_id": ObjectId(user_id)})
 
+#get curr time
+def get_readable_time():
+    now = datetime.now()
+    formatted_time = now.strftime('%Y/%m/%d %H:%M:%S')
+    return formatted_time
+
 #login auth
 def authenticate_customer(email, password):
     user = customers.find_one({"customer_email": email})
@@ -54,13 +60,13 @@ def start_new_chat_session(user_id: str):
     # Create a new session
     new_session = {
         "session_id": str(ObjectId()),  # Using ObjectId as a unique session ID
-        "start_timestamp": datetime.now().isoformat().replace('T', ' '),
+        "start_timestamp": get_readable_time(),
         "chat_log": [
             {
                 "_id": str(ObjectId()),
                 "sender": "chatbot",
                 "content": "Asiga GPT: How can I help you?",
-                "timestamp": datetime.now().isoformat().replace('T', ' ')
+                "timestamp": get_readable_time()
             }
         ]
     }
@@ -80,7 +86,7 @@ def log_message(user_id, session_id, sender, content):
     message = {
         "sender": sender,
         "content": content,
-        "timestamp": datetime.now().isoformat().replace('T', ' ')
+        "timestamp": get_readable_time()
     }
     
     try:
@@ -89,7 +95,7 @@ def log_message(user_id, session_id, sender, content):
             {"$push": {"chat_sessions.$.chat_log": {
                 "sender": sender,
                 "content": content,
-                "timestamp": datetime.now().isoformat().replace('T', ' ')
+                "timestamp": get_readable_time()
             }}}
         )
     except PyMongoError as e:
@@ -97,7 +103,7 @@ def log_message(user_id, session_id, sender, content):
 
     return message
 
-#delete session
+#delete chat session
 def delete_session(user_id: str, session_id: str) -> bool:
     """
     Deletes a chat session for a given user.
@@ -133,6 +139,7 @@ def get_messages_from_database(user_id: str, session_id: str) -> List[Dict[str, 
 
     except Exception as e:
         print("Error in get_messages_from_database:", e)
-        return []
+        raise Exception("An error occurred while fetching messages from the database.") from e
+
     
 

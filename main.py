@@ -9,6 +9,7 @@ from pymongo import MongoClient
 from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id, delete_session, get_messages_from_database, get_database
 from chatgpt import chat_with_gpt3
 from typing import List, Dict, Any
+from a import trained_gpt
 
 
 app = FastAPI()
@@ -54,36 +55,49 @@ async def read_root(request: Request, user_id: str):
 async def submit_message(user_id: str, user_message: str = Form(...), session_id: str = Form(...)):
     print(f"session_id: {session_id}")
     # AI response
-    response_message = chat_with_gpt3(user_message)
+    response_message = trained_gpt(user_message)
     print(f"response_message: {response_message}")
     
-    # Log the user's message (wrong here)
-    log_result = log_message(user_id, session_id, "user", user_message)
-    if "error" in log_result:
-        raise HTTPException(status_code=500, detail=log_result["error"])
+    # Log the user's message
+    try:
+        log_result = log_message(user_id, session_id, "user", user_message)
+        if "error" in log_result:
+            raise HTTPException(status_code=500, detail=log_result["error"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Log the chatbot's response
-    log_result = log_message(user_id, session_id, "chatbot", response_message)
-    if "error" in log_result:
-        raise HTTPException(status_code=500, detail=log_result["error"])
+    try:
+        log_result = log_message(user_id, session_id, "chatbot", response_message)
+        if "error" in log_result:
+            raise HTTPException(status_code=500, detail=log_result["error"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     return JSONResponse(content={"message": response_message})
 
 @app.post("/start-session/{user_id}")
 async def start_session(user_id: str):
-    new_session = start_new_chat_session(user_id)
-    if "error" in new_session:
-        raise HTTPException(status_code=404, detail=new_session["error"])
-    return {"session_id": new_session["session_id"]} #return session_id}
+    try:
+        new_session = start_new_chat_session(user_id)
+        if "error" in new_session:
+            raise HTTPException(status_code=500, detail=new_session["error"])
+        return {"session_id": new_session["session_id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.delete("/delete-session/{user_id}/{session_id}")
 async def delete_session_endpoint(user_id: str, session_id: str):
-    result = delete_session(user_id, session_id)
-    if result:
-        return {"message": "Session deleted successfully"}
-    else:
-        raise HTTPException(status_code=500, detail="Failed to delete the session")
+    try:
+        result = delete_session(user_id, session_id)
+        if result:
+            return {"message": "Session deleted successfully"}
+        else:
+            raise HTTPException(status_code=400, detail="Session not found or could not be deleted")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 #hist caht onclick
 class ChatMessage(BaseModel):
@@ -94,8 +108,19 @@ class ChatMessage(BaseModel):
     
 @app.get("/get-session/{user_id}/{session_id}", response_model=List[ChatMessage])
 def get_session(user_id: str, session_id: str, db: MongoClient = Depends(get_database)):
-    messages = get_messages_from_database(user_id, session_id)
-    print(f"messages: {messages}")
-    if not messages:
-        raise HTTPException(status_code=404, detail="No messages found for this session")
-    return messages
+    try:
+        print("Fetching messages...")
+        messages = get_messages_from_database(user_id, session_id)
+        print(f"Messages fetched: {messages}")
+        
+        if not messages or messages is None:
+            print("No messages found, raising 404.")
+            raise HTTPException(status_code=404, detail="No messages found for this session")
+            
+        return messages
+    except HTTPException as http_e:
+        print(f"HTTPException: {http_e.detail}")
+        raise http_e
+    except Exception as e:
+        print(f"Exception occurred: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
