@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="https://support.asiga.com/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/static/style.css" rel="stylesheet">
   </head>
   <body>
@@ -55,6 +56,12 @@
 
       <!-- BOTTOM BAR -->
       <form class="bottom-section" id="chatForm" method="post" action="/submit_message">
+        <div class="common-questions">
+          <button class="common-question" type="button">What is the composer command line option to clear composer settings?</button>
+          <button class="common-question" type="button">What is PRO4K DMD and I2C errors?</button>
+          <button class="common-question" type="button">What is PRO4K Conversion kit prices for both PN/05476 and PN/05217 PRO 4K ?</button>
+          <button class="common-question" type="button">What should I do when the Basin scratched ?</button>
+        </div>
         <div class="input-container">
             <input type="hidden" name="user_id" id="user_id" value="{{ user_id }}">
             <input type="hidden" id="session_id" name="session_id">

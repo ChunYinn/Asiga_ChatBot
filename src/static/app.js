@@ -3,6 +3,27 @@ const userInput = document.querySelector('.user-input');
 const chatContainer = document.querySelector('.chat-container');
 let isFirstMessage = true; 
 const submitBtn = document.querySelector('#submit');
+const commonQuestionsContainer = document.querySelector('.common-questions');
+
+userInput.addEventListener('focus', function() {
+    console.log("executed!");
+    commonQuestionsContainer.style.display = 'none';
+});
+
+userInput.addEventListener('blur', function() {
+    if (isFirstMessage) 
+        commonQuestionsContainer.style.display = 'flex';
+});
+
+document.querySelectorAll('.common-question').forEach(button => {
+    button.addEventListener('click', function() {
+        console.log("executed!");
+        userInput.value = this.textContent; // Set the input value to the button's content
+        commonQuestionsContainer.style.display = 'none'; // Hide the common questions
+        generateMsg(); // Send the message
+    });
+});
+
 
 submitBtn.addEventListener('click', async function(e) {
     e.preventDefault();
@@ -76,6 +97,19 @@ const generateMsg = async() => {
     chatbotMessageDiv.className = 'chatbot-message message';
     chatbotMessageDiv.innerHTML = `<p>Asiga GPT: ${chatbotResponse}</p>`;
     chatbotMessageWrapper.appendChild(chatbotMessageDiv);
+    chatContainer.appendChild(chatbotMessageWrapper);
+
+    // Append the thumb icons
+    const thumbUpIcon = document.createElement('i');
+    thumbUpIcon.className = 'material-icons thumb-icon';
+    thumbUpIcon.textContent = 'thumb_up';
+    chatbotMessageWrapper.appendChild(thumbUpIcon);
+
+    const thumbDownIcon = document.createElement('i');
+    thumbDownIcon.className = 'material-icons thumb-icon';
+    thumbDownIcon.textContent = 'thumb_down';
+    chatbotMessageWrapper.appendChild(thumbDownIcon);
+
     chatContainer.appendChild(chatbotMessageWrapper);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -206,6 +240,9 @@ const startNewChatInterface = () => {
 
     chatContainer.appendChild(chatbotMessageWrapper);
 
+    //add comon questions back
+    commonQuestionsContainer.style.display = 'flex';
+
     enableInput();
 }
 
@@ -255,6 +292,8 @@ document.addEventListener('click', async function(e) {
     if (historyItem && !e.target.classList.contains('delete-icon')) {
         const sessionId = historyItem.getAttribute('data-session-id');
         const user_id = document.getElementById('user_id').value;
+
+        commonQuestionsContainer.style.display = 'none'; // Set this to false so that the common questions are not shown
 
         // Show the loading animation before fetching the data
         const chatContainer = document.querySelector('.chat-container');
@@ -329,3 +368,32 @@ const getReadableTime = () => {
     return readableTime;
   }
 
+
+
+// initially hide the common questions when the chat page loads if it's not the first message
+if (!isFirstMessage) {
+    commonQuestionsContainer.style.display = 'none';
+}
+
+//upvoke and downvote
+document.addEventListener('click', function(event) {
+    if (event.target && event.target.matches('.thumb-icon')) {
+        const siblingThumb = (event.target.textContent === 'thumb_up') ? event.target.nextElementSibling : event.target.previousElementSibling;
+        
+        if (event.target.classList.contains('clicked')) {
+            event.target.classList.remove('clicked');
+            // remove upvote or downvote
+        } else {
+            event.target.classList.add('clicked');
+            siblingThumb.classList.remove('clicked');
+            
+            if (event.target.textContent === 'thumb_up') {
+                console.log('Upvoted!');
+                // Your upvote logic here...
+            } else if (event.target.textContent === 'thumb_down') {
+                console.log('Downvoted!');
+                // Your downvote logic here...
+            }
+        }
+    }
+});

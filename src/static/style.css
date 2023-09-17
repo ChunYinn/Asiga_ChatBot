@@ -354,6 +354,28 @@ button#openBtn{
   gap: 12px;  
 }
 
+.thumb-icon {
+  display: none;
+  font-size: 18px; /* adjust as needed */
+  cursor: pointer;
+  margin-left: 2px;
+  color: #cbcbcb; /* this is your background color */
+  padding: 2px; 
+}
+
+.thumb-icon.clicked {
+  color: #3b3b3b; 
+}
+
+.chatbot-message-wrapper:hover .thumb-icon {
+  display: inline;
+}
+
+.thumb-icon:hover {
+  color: #000000; 
+}
+
+
 .robot-icon {
   width: 34px;  
   height: 34px;  
@@ -390,6 +412,40 @@ button#openBtn{
   position: absolute;
   bottom: 10%;
 }
+
+/* Container for the common questions */
+.common-questions {
+  position: absolute; 
+  bottom: 65px; /* Adjust depending on the height of your textarea and desired gap */
+  /* left: 0;
+  right: 0; */
+  display: flex;
+  flex-wrap: wrap; /* This allows the questions to wrap to the next line if they don't fit */
+  gap: 5px; /* Space between each button */
+  padding: 0 15px; /* Padding to match the textarea's padding */
+  overflow: hidden; /* Hide any overflow */
+  width: 80%;
+}
+
+/* Individual button styling for each common question */
+.common-question {
+  padding: 5px 10px; /* Space around the text inside the button */
+  background-color: #4CAF50; /* Button color */
+  color: white; /* Text color */
+  border: none;
+  border-radius: 20px; 
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap; /* Prevents the button's text from wrapping */
+  margin: 0;
+  width: auto;
+}
+
+.common-question:hover {
+  background-color: #388E3C; 
+}
+
+
 
 .input-container {
   width: 80%;
