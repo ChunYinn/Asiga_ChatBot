@@ -1,3 +1,5 @@
+#still testing, not enough buget to train
+
 import os
 import openai
 openai.api_key = "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"

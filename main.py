@@ -9,7 +9,7 @@ from pymongo import MongoClient
 from db import authenticate_customer, start_new_chat_session, log_message,get_user_by_id, delete_session, get_messages_from_database, get_database
 from chatgpt import chat_with_gpt3
 from typing import List, Dict, Any
-from a import trained_gpt
+from langchainn import trained_gpt
 
 
 app = FastAPI()

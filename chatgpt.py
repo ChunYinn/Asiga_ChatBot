@@ -1,3 +1,5 @@
+#using chatgpt3.5 for temporary solution
+
 import config
 import openai
 
